@@ -1,0 +1,264 @@
+body {
+  margin: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgb(54, 57, 63);
+}
+.fakeButton {
+  position: fixed;
+  text-decoration: none;
+  font-size: 22px;
+  color: rgb(51, 51, 51);
+  background-color: rgb(200, 200, 200);
+  padding: 6px 18px 6px 18px;
+  border-radius: 5px;
+  top: 3vh;
+  right: 2vw;
+}
+#logout {
+  background-color: rgb(178, 59, 59);
+}
+#chooseServer {
+  transform: translateY(40px);
+}
+#messageList {
+  padding: 0;
+  margin: 0;
+  list-style-type: none;
+}
+.message {
+  color: rgb(220, 221, 222);
+  font-family: Whitney, Helvetica Neue, Helvetica, Arial, sans-serif;
+  font-size: 16px;
+  font-weight: 400;
+  margin: 17px 0 0 0;
+  padding: 2px 48px 2px 78px;
+  white-space: break-spaces;
+}
+.message:hover {
+  background-color: rgba(4, 4, 5, 0.07);
+}
+.leftColumn {
+  float: left;
+  text-align: center;
+  vertical-align: text-bottom;
+  width: 72px;
+  margin-left: -78px;
+}
+.rightColumn {
+  line-height: 22px;
+}
+/* pfp */
+.leftColumn > img {
+  width: 40px;
+  height: 40px;
+  clip-path: circle();
+  margin-top: 4px;
+}
+/* username */
+.rightColumn > span:first-of-type {
+  color: rgb(255, 255, 255);
+  font-weight: 500;
+  margin-right: 4px;
+}
+/* timestamp */
+.rightColumn > span:nth-of-type(2) {
+  color: rgb(114, 118, 125);
+  font-weight: 500;
+  font-size: 12px;
+  margin-left: 4px;
+}
+/* content */
+.rightColumn > p {
+  overflow-wrap: break-word;
+  margin: 0;
+}
+/* formatting */
+.msgInline {
+  background-color: rgb(47, 49, 54);
+  font-family: Consolas, Andale Mono WT, Andale Mono, Lucida Console,
+    Lucida Sans Typewriter, DejaVu Sans Mono, Bitstream Vera Sans Mono,
+    Liberation Mono, Nimbus Mono L, Monaco, Courier New, Courier, monospace;
+  font-size: 13.6px;
+  line-height: 18px;
+  margin: -0.2em 0 -0.2em 0;
+  padding: 0.2em;
+  border-radius: 3px;
+  text-align: left;
+}
+.msgCode {
+  border-radius: 4px;
+  box-sizing: border-box;
+  font-family: Consolas, Andale Mono WT, Andale Mono, Lucida Console,
+    Lucida Sans Typewriter, DejaVu Sans Mono, Bitstream Vera Sans Mono,
+    Liberation Mono, Nimbus Mono L, Monaco, Courier New, Courier, monospace;
+  font-size: 12px;
+  line-height: 16px;
+  margin: 0;
+  max-width: 90%;
+  overflow-wrap: break-word;
+  padding: 6px 0 0 0;
+  text-align: left;
+  text-indent: 0;
+  user-select: text;
+  vertical-align: baseline;
+  white-space: pre-wrap;
+}
+.msgCode > code {
+  background: rgb(47, 49, 54);
+  border: 1px solid rgb(32, 34, 37);
+  border-radius: 4px;
+  color: rgb(185, 187, 190);
+  display: block;
+  font-size: 14px;
+  line-height: 18px;
+  margin: 0;
+  overflow-x: auto;
+  padding: 7px;
+}
+.msgQuote {
+  display: flex;
+  margin: 0;
+  padding: 0;
+  text-indent: 0;
+  user-select: text;
+  vertical-align: baseline;
+  white-space: pre;
+}
+.msgQuote > div {
+  display: block;
+  background-color: rgb(79, 84, 92);
+  border-radius: 4px;
+  width: 4px;
+  padding: 0;
+}
+.msgQuote > blockquote {
+  display: block;
+  box-sizing: border-box;
+  max-width: 90%;
+  margin: 0;
+  padding: 0 8px 0 12px;
+  text-indent: 0;
+}
+.msgSpoiler {
+  transition: all 0.1s ease;
+  background-color: rgb(32, 34, 37);
+  border-radius: 3px;
+  cursor: pointer;
+  user-select: text;
+  vertical-align: baseline;
+  display: inline-block;
+}
+.msgSpoiler.msgSpoilerClicked {
+  background-color: hsla(0, 0%, 100%, 0.1);
+}
+.msgSpoiler > span {
+  opacity: 0;
+  pointer-events: none;
+  vertical-align: baseline;
+}
+.msgSpoiler.msgSpoilerClicked > span {
+  opacity: 1;
+}
+
+#typingArea {
+  box-sizing: border-box;
+  width: 100%;
+  height: 68px;
+  padding: 0 16px 0 16px;
+  position: fixed;
+  bottom: 0;
+  display: flex;
+  flex-direction: column;
+}
+#typingArea > div:first-of-type {
+  box-sizing: border-box;
+  flex-grow: 1;
+  width: 100%;
+  padding: 0;
+}
+#typingArea > div:last-of-type {
+  flex-basis: 24px;
+  width: 100%;
+  background-color: rgb(54, 57, 63);
+}
+#innerTypingArea {
+  box-sizing: border-box;
+  height: 100%;
+  width: 100%;
+  background-color: rgb(64, 68, 75);
+  border-radius: 8px;
+  padding: 0 12px 0 16px;
+  display: flex;
+  flex-direction: row;
+  align-items: stretch;
+}
+#fileInput {
+  position: absolute;
+  width: 0;
+  height: 0;
+}
+#fileAttachWrap {
+  flex-basis: 40px;
+}
+#fileAttachWrap > button {
+  border: none;
+  background: none;
+  cursor: pointer;
+  margin: 0;
+  padding: 10px 16px 10px 0;
+  fill: rgb(185, 187, 190);
+}
+#fileAttachWrap > button:hover {
+  fill: rgb(220, 221, 222);
+}
+#messageInputWrap {
+  flex-grow: 1;
+}
+#messageInputWrap > div {
+  box-sizing: border-box;
+  padding: 11px 10px 11px 0;
+  width: 100%;
+}
+#messageInput {
+  width: 100%;
+  border: none;
+  text-align: left;
+  background: none;
+  color: rgb(220, 221, 222);
+  caret-color: rgb(220, 221, 222);
+  white-space: break-spaces;
+  font-family: Whitney, 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 22px;
+}
+#messageInput:focus {
+  outline: none;
+}
+#messageInput:empty::before {
+  content: attr(data-placeholder);
+  color: rgb(114, 118, 125);
+}
+#messageButtonsWrap {
+  margin-right: -6px;
+  display: inline-flex;
+}
+
+#errorWrap {
+  display: inline-flex;
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  flex-direction: column;
+}
+.error {
+  display: inline-block;
+  margin: 4px 0 0 0;
+  padding: 16px 16px 16px 16px;
+  background-color: rgb(255, 133, 133);
+  border-radius: 4px;
+  color: rgb(252, 252, 252);
+  font-size: 16px;
+  font-weight: 500;
+}

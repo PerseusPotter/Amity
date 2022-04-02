@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <title>Amity</title>
+  <link rel="stylesheet" href="/style.css">
+  <script type="text/javascript" src="/util.js"></script>
+  <script type="text/javascript" src="/script.js"></script>
+</head>
+
+<body>
+  <ol id="messageList"></ol>
+  <div style="width: 1px; height: 88px;"></div>
+  <form id="typingArea">
+    <div>
+      <div id="innerTypingArea">
+        <div id="fileAttachWrap">
+          <input id="fileInput" type="file" multiple>
+          <button>
+            <svg width="24" height="24" viewBox="0 0 24 24">
+              <path d="M12 2.00098C6.486 2.00098 2 6.48698 2 12.001C2 17.515 6.486 22.001 12 22.001C17.514 22.001 22 17.515 22 12.001C22 6.48698 17.514 2.00098 12 2.00098ZM17 13.001H13V17.001H11V13.001H7V11.001H11V7.00098H13V11.001H17V13.001Z"></path>
+            </svg>
+          </button>
+        </div>
+        <div id="messageInputWrap">
+          <div data-placeholder="Message people ig" id="messageInput"></div>
+        </div>
+        <div id="messageButtonsWrap">
+
+        </div>
+      </div>
+    </div>
+    <div>
+    </div>
+  </form>
+  <div id="errorWrap"></div>
+  <a class="fakeButton" id="logout" href="/resetplz">Logout</a>
+  <a class="fakeButton" id="chooseServer" href="/chooseServer">Choose Server</a>
+</body>
