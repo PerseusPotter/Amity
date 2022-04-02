@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Sign up for Amity</title>
+    <style>
+        :root {
+            font-size: 16px;
+            font-family: arial;
+            text-align: center;
+            position: relative;
+        }
+
+        .title {
+            width: 100%;
+            height: 20rem;
+            /* outline: dashed 1px black; */
+            display: flex;
+            justify-content: center;
+        }
+
+        #title {
+            font-size: 4rem;
+            width: 34rem;
+            height: 16rem;
+            /* background-color: red; */
+        }
+
+        .signup-sheet {
+            /* font-family: arial; */
+            font-size: 24rem;
+            width: 100%;
+            height: 20rem;
+            outline: dashed 1px black;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+
+        }
+
+        #username,
+        #password {
+            height: 3rem;
+            max-width: 32rem;
+            border-radius: 1rem;
+            text-align: center;
+            position: relative;
+        }
+
+        #submitButton {
+            border: none;
+            padding: 1rem 2rem;
+            background: #0069ed;
+            color: #ffffff;
+            font-size: 1rem;
+            cursor: pointer;
+            text-align: center;
+            transition: background 250ms ease-in-out,
+                transform 150ms ease;
+            border-radius: 1rem;
+        }
+
+        #submitButton:hover,
+        #submitButton:focus {
+            background: #0053ba;
+        }
+
+        #submitButton:focus {
+            outline: 1px solid #fff;
+            outline-offset: -4px;
+        }
+
+        #submitButton:active {
+            transform: scale(0.99);
+        }
+
+        input:invalid {
+            background-color: palevioletred;
+        }
+    </style>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"
+        integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+</head>
+
+<body>
+    <div class="nav-bar">
+
+    </div>
+    <div class="title">
+        <h1 id="title">Sign up for Amity</h1>
+    </div>
+    <form action="" class="signup-sheet">
+        <input id="username" pattern="[ -~]+?" type="text" placeholder="Username" maxlength="128">
+        <input id="password" pattern="[ -~]+?" type="password" placeholder="Password">
+        <button id="submitButton" type="button" formaction="submit">Next</button>
+    </form>
+
+        <script>
+        //const usernameElem = document.getElementById("username");
+        //usernameElem.addEventListener("keyup", async function () {
+        //    let b = new Blob([usernameElem.value]);
+        //    let e = await b.slice(0, 128).text();
+        //    console.log(e);
+        //    usernameElem.value = e;
+        //})
+        //$("#username").change(async function () {
+        //    let b = new Blob([$("#username").val()]);
+        //    $("#title").val(await b.slice(Math.min(b.size, 128)).text());
+        //})
+        //document.getElementById("submitButton").addEventListener("click", function (clickEvent) {
+        //    alert(document.getElementById("username").value);
+        //    // if (new Blob([document.getElementById("username").value]).size);
+        //});
+        </script>
+
+</body>
+
+</html>
