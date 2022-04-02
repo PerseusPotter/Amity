@@ -31,7 +31,7 @@
             font-size: 24rem;
             width: 100%;
             height: 20rem;
-            outline: dashed 1px black;
+            /* outline: dashed 1px black;  */
             display: flex;
             flex-direction: column;
             justify-content: center;
@@ -48,7 +48,7 @@
             position: relative;
         }
 
-        #submitButton {
+        #nextButton {
             border: none;
             padding: 1rem 2rem;
             background: #0069ed;
@@ -61,17 +61,17 @@
             border-radius: 1rem;
         }
 
-        #submitButton:hover,
-        #submitButton:focus {
+        #nextButton:hover,
+        #nextButton:focus {
             background: #0053ba;
         }
 
-        #submitButton:focus {
+        #nextButton:focus {
             outline: 1px solid #fff;
             outline-offset: -4px;
         }
 
-        #submitButton:active {
+        #nextButton:active {
             transform: scale(0.99);
         }
 
@@ -92,28 +92,9 @@
     </div>
     <form action="" class="signup-sheet">
         <input id="username" pattern="[ -~]+?" type="text" placeholder="Username" maxlength="128">
-        <input id="password" pattern="[ -~]+?" type="password" placeholder="Password">
-        <button id="submitButton" type="button" formaction="submit">Next</button>
+        <input id="password" pattern="[ -~]+?" type="password" placeholder="Password" maxlength="128">
+        <button id="nextButton" type="button">Next</button> <!-- Add an onclick event to show the next page -->
     </form>
-
-        <script>
-        //const usernameElem = document.getElementById("username");
-        //usernameElem.addEventListener("keyup", async function () {
-        //    let b = new Blob([usernameElem.value]);
-        //    let e = await b.slice(0, 128).text();
-        //    console.log(e);
-        //    usernameElem.value = e;
-        //})
-        //$("#username").change(async function () {
-        //    let b = new Blob([$("#username").val()]);
-        //    $("#title").val(await b.slice(Math.min(b.size, 128)).text());
-        //})
-        //document.getElementById("submitButton").addEventListener("click", function (clickEvent) {
-        //    alert(document.getElementById("username").value);
-        //    // if (new Blob([document.getElementById("username").value]).size);
-        //});
-        </script>
-
 </body>
 
 </html>
