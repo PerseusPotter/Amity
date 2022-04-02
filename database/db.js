@@ -74,7 +74,10 @@ class Table {
       let index = 0;
       while (true) {
         let { bytesRead } = fh.read(buf, 0, len, index);
-        if (bytesRead < len) return -1;
+        if (bytesRead < len) {
+          q.forEach(v => v[4](-1));
+          break;
+        }
 
         let pos = 0;
         while (pos < 4096) {
