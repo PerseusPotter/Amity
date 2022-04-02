@@ -20,7 +20,7 @@
             color: grey;
             cursor: pointer;
         }
-        #signin-button {
+        #login-button {
             position: absolute;
             top: 2rem;
             right: 2rem;
@@ -30,20 +30,23 @@
             cursor: pointer;
         }
 
-        #signin-area {
+        #login-panel {
             visibility: hidden;
             position: absolute;
             top: 3rem;
             right: 3rem;
-            /* border: .05rem dotted black; */
             border-style: groove;
-            /* border-width: 1rem; */
             width: 20rem;
             height: 20rem;
             background-color: white;
+        }
+
+        #login-area {
             display: flex;
             flex-direction: column;
             justify-content: center;
+            align-items: center;
+            row-gap: .25rem;
         }
 
         #username,
@@ -86,6 +89,12 @@
         input:invalid {
             background-color: palevioletred;
         }
+
+        #about {
+            margin: 0 auto;
+            width: 32rem;
+            border: 2px dotted black;
+        }
     </style>
 </head>
 
@@ -93,26 +102,30 @@
     
     <div id="home-button" class="fas fa-home"></div>
     <h1>Welcome to Amity</h1>
-    <button id="signin-button" class="fa fa-sign-in"></button>
-    <div id="signin-area">
+    <button id="login-button" class="fa fa-sign-in"></button>
+    <div id="login-panel">
         <h2>Sign in</h2>
-        <form>
+        <form id="login-area">
             <input id="username" pattern="[ -~]+?" type="text" placeholder="Username" />
             <input id="password" pattern="[ -~]+?" type="password" placeholder="Password" />
-            <!-- <br> -->
             <input id="loginButton" type="submit" value="Login" />
         </form>
-        <a href="signup.html">Register</a>
+        <p>Don't have an account? <a href="signup.html">Register</a></p>
+    </div>
+    <div id="about">
+        <p>Turn your club up to 11 with Amity.</p>
+        <p>A description about it would go here with fancy big words</p>
+        <p>The border here is just for styling purposes and should be removed</p>
     </div>
     <script>
         document.addEventListener("click", (event) => {
-            if (!document.getElementById("signin-area").contains(event.target)) 
+            if (!document.getElementById("login-panel").contains(event.target)) 
             {
-                document.getElementById("signin-area").style.visibility = "hidden";
+                document.getElementById("login-panel").style.visibility = "hidden";
             }
-            if (event.target.id === "signin-button") 
+            if (event.target.id === "login-button") 
             {
-                document.getElementById("signin-area").style.visibility = "visible";
+                document.getElementById("login-panel").style.visibility = "visible";
             }
         })
     </script>

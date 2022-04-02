@@ -8,13 +8,11 @@
             font-size: 16px;
             font-family: arial;
             text-align: center;
-            position: relative;
         }
 
         .title {
             width: 100%;
             height: 20rem;
-            /* outline: dashed 1px black; */
             display: flex;
             justify-content: center;
         }
@@ -23,24 +21,22 @@
             font-size: 4rem;
             width: 34rem;
             height: 16rem;
-            /* background-color: red; */
         }
 
-        .signup-sheet {
-            /* font-family: arial; */
+        #signup-sheet {
             font-size: 24rem;
             width: 100%;
             height: 20rem;
-            /* outline: dashed 1px black;  */
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
-
+            row-gap: 3rem;
         }
 
         #username,
-        #password {
+        #password,
+        #confirmpassword {
             height: 3rem;
             max-width: 32rem;
             border-radius: 1rem;
@@ -79,8 +75,6 @@
             background-color: palevioletred;
         }
     </style>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"
-        integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
 </head>
 
 <body>
@@ -90,11 +84,40 @@
     <div class="title">
         <h1 id="title">Sign up for Amity</h1>
     </div>
-    <form action="" class="signup-sheet">
-        <input id="username" pattern="[ -~]+?" type="text" placeholder="Username" maxlength="128">
-        <input id="password" pattern="[ -~]+?" type="password" placeholder="Password" maxlength="128">
-        <button id="nextButton" type="button">Next</button> <!-- Add an onclick event to show the next page -->
+    <form onsubmit="signUp();">
+        <div id="signup-sheet">
+            <input id="username" pattern="[ -~]+?" type="text" placeholder="Username" maxlength="128">
+            <input id="password" pattern="[ -~]+?" type="password" placeholder="Password" maxlength="128">
+            <input id="confirmpassword" pattern="[ -~]+?" type="password" placeholder="Confirm Password"
+                maxlength="128">
+            <button id="nextButton" type="button">Sign Up</button> <!-- Add an onclick event to show the next page -->
+        </div>
     </form>
+    <script>
+        function signUp() {
+            let username = document.getElementById("username").value;
+            let password = document.getElementById("password").value;
+            if (password !== document.getElementById("confirmpassword").value) {
+                // REPLACE THIS WITH A PROPER NOTIFICATION
+                alert("Passwords do not match!");
+                return;
+            }
+
+            const encoder = new TextEncoder();
+            const decoder = new TextDecoder();
+            let socket = new WebSocket("wss://" + window.location.hostname + ":443");
+            let clientSalt = new Uint32Array(2);
+            crypto.getRandomValues(clientSalt);
+            clientSalt = clientSalt[0].toString(2) + clientSalt(1).toString(2);
+            console.log(clientSalt);
+            exampleSocket.send(JSON.stringify(
+                {
+                    "username": username,
+                    "bits": clientSalt
+                }
+            ));
+        }
+    </script>
 </body>
 
 </html>
