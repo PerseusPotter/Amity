@@ -62,7 +62,9 @@ class Table {
 
     let { promise, cb } = await getPromise();
     this.readQueue.push([this.cumSum[key], this.dataLengths[key], this.dataTypes[key], value, cb]);
-    if (Date.now() - this.prevReadTime > 100) {
+    let t = Date.now();
+    if (t - this.prevReadTime > 100) {
+      this.prevReadTime = t;
       let fh = this.fh;
       if (!this.fh) {
         await this.fhP;
