@@ -4,31 +4,92 @@
 <head>
     <meta charset="utf-8">
     <title>Amity</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
         :root {
             font-size: 16px;
             font-family: arial;
             text-align: center;
             position: relative;
+            overflow: hidden;
         }
+        @media only screen and (max-width: 1650px) {
+            /* For tablets: */
+            html {
+                font-size: 8px;
+                background-color: red;
+            }
+        }
+        @media only screen and (max-width: 600px) {
+            /* For tablets: */
+            html {
+                font-size: 8px;
+                background-color: white;
+            }
+            #channelList {
+                position: fixed;
+                border: dotted white;
+                width: 100%;
+                left: 1vw;
+            }
+
+        }
+        @media only screen and (min-width: 768px) {
+            /* For Desktops: */
+            html {
+                font-size: 8px;
+                background-color: white;
+            }
+            body {
+                width: 1920px;
+                height: 1080px;
+            }
+            #channelList {
+                position: fixed;
+                border: dotted black;
+                width: 30rem;
+                height: 50rem;
+                left: 1vw;
+            }
+            #messageList {
+                position: fixed;
+                /* border: dotted blue; */
+                width: 75rem;
+                height: 50rem;
+                right: 1vw;
+                display: flex;
+                flex-direction: column;
+                gap: 1rem;
+                overflow-y: scroll;
+            }
+            .message {
+                /* border: dotted purple; */
+                justify-content: flex-start;
+                align-items: center;
+                display: flex;
+                gap: 1rem;
+            }
+            .message>img{
+                clip-path: circle();
+            }
+
+        }
+
         #holdingDiv {
             text-align: center;
             width: 100%;
             height: 100%;
+            border: dotted pink;
         }
 
-        #channelList {
-            border: dotted black;
-        }
         #eventList {
             border: dotted red;
+            left: 0;
         }
-        #messageList {
-            border: dotted blue;
-        }
+
         #messageBox {
-            display: none;
-            /* border: dotted black; */
+            /* display: none; */
+            border: dotted black;
         }
         #clubSelector {
             position: fixed;
@@ -62,8 +123,8 @@
 
 <body>
 
-    <ol id="channelList">
-        <ul>#general</ul>
+        <ol id="channelList">
+            <ul>#general</ul>
         <ul>#memes</ul>
         <ol id="eventList">
             <ul>4/2/22 2:45 PM -- Work on this</ul>
@@ -71,7 +132,27 @@
         </ol>
     </ol>
     <ol id="messageList">
-        <ul><img src="https://cdn.discordapp.com/avatars/572891668966277140/4e0320eff8f94e47d0dcd43bcfc0e840.webp?size=80">Message</ul>
+        <!-- These can all be removed they're just for testing purposes-->
+        <li class="message"><img title="!'m bored" src="https://cdn.discordapp.com/avatars/572891668966277140/4e0320eff8f94e47d0dcd43bcfc0e840.webp?size=80">Message</li>
+        <li class="message"><img title="!'m bored" src="https://cdn.discordapp.com/avatars/572891668966277140/4e0320eff8f94e47d0dcd43bcfc0e840.webp?size=80">Message</li>
+        <li class="message"><img title="!'m bored" src="https://cdn.discordapp.com/avatars/572891668966277140/4e0320eff8f94e47d0dcd43bcfc0e840.webp?size=80">Message</li>
+        <li class="message"><img title="!'m bored" src="https://cdn.discordapp.com/avatars/572891668966277140/4e0320eff8f94e47d0dcd43bcfc0e840.webp?size=80">Message</li>
+        <li class="message"><img title="!'m bored" src="https://cdn.discordapp.com/avatars/572891668966277140/4e0320eff8f94e47d0dcd43bcfc0e840.webp?size=80">Message</li>
+        <li class="message"><img title="!'m bored" src="https://cdn.discordapp.com/avatars/572891668966277140/4e0320eff8f94e47d0dcd43bcfc0e840.webp?size=80">Message</li>
+        <li class="message"><img title="!'m bored" src="https://cdn.discordapp.com/avatars/572891668966277140/4e0320eff8f94e47d0dcd43bcfc0e840.webp?size=80">Message</li>
+        <li class="message"><img title="!'m bored" src="https://cdn.discordapp.com/avatars/572891668966277140/4e0320eff8f94e47d0dcd43bcfc0e840.webp?size=80">Message</li>
+        <li class="message"><img title="!'m bored" src="https://cdn.discordapp.com/avatars/572891668966277140/4e0320eff8f94e47d0dcd43bcfc0e840.webp?size=80">Message</li>
+        <li class="message"><img title="!'m bored" src="https://cdn.discordapp.com/avatars/572891668966277140/4e0320eff8f94e47d0dcd43bcfc0e840.webp?size=80">Message</li>
+        <li class="message"><img title="!'m bored" src="https://cdn.discordapp.com/avatars/572891668966277140/4e0320eff8f94e47d0dcd43bcfc0e840.webp?size=80">Message</li>
+        <li class="message"><img title="!'m bored" src="https://cdn.discordapp.com/avatars/572891668966277140/4e0320eff8f94e47d0dcd43bcfc0e840.webp?size=80">Message</li>
+        <li class="message"><img title="!'m bored" src="https://cdn.discordapp.com/avatars/572891668966277140/4e0320eff8f94e47d0dcd43bcfc0e840.webp?size=80">Message</li>
+        <li class="message"><img title="!'m bored" src="https://cdn.discordapp.com/avatars/572891668966277140/4e0320eff8f94e47d0dcd43bcfc0e840.webp?size=80">Message</li>
+        <li class="message"><img title="!'m bored" src="https://cdn.discordapp.com/avatars/572891668966277140/4e0320eff8f94e47d0dcd43bcfc0e840.webp?size=80">Message</li>
+        <li class="message"><img title="!'m bored" src="https://cdn.discordapp.com/avatars/572891668966277140/4e0320eff8f94e47d0dcd43bcfc0e840.webp?size=80">Message</li>
+        <li class="message"><img title="!'m bored" src="https://cdn.discordapp.com/avatars/572891668966277140/4e0320eff8f94e47d0dcd43bcfc0e840.webp?size=80">Message</li>
+        <li class="message"><img title="!'m bored" src="https://cdn.discordapp.com/avatars/572891668966277140/4e0320eff8f94e47d0dcd43bcfc0e840.webp?size=80">Message</li>
+        <li class="message"><img title="!'m bored" src="https://cdn.discordapp.com/avatars/572891668966277140/4e0320eff8f94e47d0dcd43bcfc0e840.webp?size=80">Message</li>
+        <li class="message"><img title="!'m bored" src="https://cdn.discordapp.com/avatars/572891668966277140/4e0320eff8f94e47d0dcd43bcfc0e840.webp?size=80">Message</li>
     </ol>
     <input id="messageBox" type="text">
     <div id="clubSelector">
@@ -79,13 +160,29 @@
         <img class="club" src="https://cdn.discordapp.com/avatars/200381124738809856/fa502f0e7799817d32fbcc913aaf1665.webp?size=80">
         <img class="club" src="https://cdn.discordapp.com/avatars/397170615812882443/8abf7a26936aed1a71dd5880ab34b9a7.webp?size=80">
     </div>
-
-
+    
+    
     <script>
-function onMessage(message) 
-{
+        function appendMessage(message, avatar, username) 
+        {
+            let container = document.getElementById("messageList");
+            let messageElem = document.createElement("div");
+            messageElem.classList.add("message");
+            messageElem.innerHTML = "<img src='" + avatar + "' title='" + username + "'>" + message;
+            container.appendChild(messageElem);
+            if (container.scrollHeight - container.clientHeight <= container.scrollTop + 100) 
+            {
+                container.scrollTop = container.scrollHeight - container.clientHeight;
+            }
+        }
+        function onMessage(message) 
+        {
 
-}
+        }
+        function switchChannel() 
+        {
+
+        }
     </script>
 </body>
 </html>

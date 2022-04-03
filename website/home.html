@@ -128,6 +128,70 @@
                 document.getElementById("login-panel").style.visibility = "visible";
             }
         })
+
+        document.addEventListener("submit", (evt) => {
+            evt.preventDefault();
+            const encoder = new TextEncoder();
+            const decoder = new TextDecoder();
+            let socket = new WebSocket("ws://" + window.location.hostname + ":443"); // CHANGE TO WSS FOR PROD
+
+            socket.onopen = function (event) {
+                let bits = new Uint8Array(8);
+                crypto.subtle.getRandomValues(bits);
+                let usernameBuf = encoder.encode(username);
+                let res = new Uint8Array(8 + usernameBuf.byteLength);
+                for (let i = 0; i < 8; i++) res[i] = bits[i];
+                for (let i = 8; i < res.byteLength; i++) res[i] = usernameBuf[i - 8];
+                socket.send(res);
+
+            }
+            
+            let state = 0;
+            let saltedPass;
+            let bits;
+            socket.onmessage = async function (event) 
+            {
+                if (state === 0) 
+                {
+                    let salt = new Uint32Array(event.data, 0, 32);
+                    let iterCount = (new Uint32Array(event.data, 32, 4))[0];
+                    bits = new Uint32Array(event.data, 36, 16);
+
+                    let passKey = await crypto.subtle.importKey('raw', encoder.encode(password), 'PBKDF2', false, ['deriveBits']);
+                    saltedPass = await crypto.subtle.deriveBits({ name: 'PBKDF2', hash: 'SHA-256', salt, iterations: iterCount }, passKey, 32);
+
+                    let hmacKey = await crypto.subtle.importKey('raw', encoder.encode('Client Key'), { name: 'HMAC', hash: 'SHA-256' }, false, ['sign']);
+                    let clientKey = await crypto.subtle.sign('HMAC', hmacKey, saltedPass);
+                    let clientKeyH = await crypto.subtle.digest('SHA-256', clientKey);
+
+                    hmacKey = await crypto.subtle.importKey('raw', bits, { name: 'HMAC', hash: 'SHA-256' }, false, ['sign']);
+                    let clientSign = await crypto.subtle.sign('HMAC', hmacKey, clientKeyH);
+                    let clientProof = new Uint32Array(8);
+                    for (let i = 0; i < 8; i++) clientProof[i] = clientKey[i] ^ clientSign[i];
+                    
+                    socket.send(clientProof);
+                }
+                else if (state === 1) 
+                {
+                    let serverSign = new Uint32Array(event.data, 0, 32);
+
+                    hmacKey = await crypto.subtle.importKey('raw', encoder.encode('Server Key'), { name: 'HMAC', hash: 'SHA-256' }, false, ['sign']);
+                    let serverKey = await crypto.subtle.sign('HMAC', hmacKey, saltedPass);
+                    hmacKey = await crypto.subtle.importKey('raw', bits, { name: 'HMAC', hash: 'SHA-256' }, false, ['sign']);
+                    let serverSignOur = await crypto.subtle.sign('HMAC', hmacKey, serverKey);
+
+                    let isSame = true;
+                    for (let i = 0; isSame && i < 8; i++) if (serverSign[i] !== serverSignOur[i]) isSame = false;
+
+                    if (!isSame) console.error("Bad server!");
+                }
+                else {
+                    // Show an actual error message in prod
+                    console.error("Server is in an invalid state!");
+                }
+                state++;
+            }
+        });
     </script>
 </body>
 

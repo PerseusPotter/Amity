@@ -26,7 +26,7 @@
         #signup-sheet {
             font-size: 24rem;
             width: 100%;
-            height: 20rem;
+            height: 25rem;
             display: flex;
             flex-direction: column;
             justify-content: center;
@@ -40,6 +40,13 @@
             height: 3rem;
             max-width: 32rem;
             border-radius: 1rem;
+            text-align: center;
+            position: relative;
+        }
+
+        #avatar {
+            height: 3rem;
+            max-width: 32rem;
             text-align: center;
             position: relative;
         }
@@ -92,82 +99,44 @@
                 maxlength="128">
             <input id="confirmpassword" autocomplete="new-password" pattern="[ -~]+?" type="password"
                 placeholder="Confirm Password" maxlength="128">
+            <input type="button" id="fakeAvatar" onclick="document.getElementById('avatar').click();"
+                value="Upload Avatar" />
+            <input type="file" style="display: none;" id="avatar" accept="image/jpeg" />
             <button id="nextButton" type="submit">Sign Up</button> <!-- Add an onclick event to show the next page -->
         </div>
     </form>
     <script>
+        let hasFile = false;
+        document.getElementById("avatar").onchange = function (event) {
+            hasFile = true;
+            document.getElementById("fakeAvatar").value = document.getElementById("avatar").files[0].name;
+        }
+
+
         document.addEventListener("submit", (evt) => {
             evt.preventDefault();
             let username = document.getElementById("username").value;
             let password = document.getElementById("password").value;
-            if (password !== document.getElementById("confirmpassword").value) {
+            if (username === "" || password === "") {
+                alert("Some fields have not been filled out!");
+                return false;
+            }
+            else if (password !== document.getElementById("confirmpassword").value) {
                 // REPLACE THIS WITH A PROPER NOTIFICATION
                 alert("Passwords do not match!");
                 return false;
             }
-
-            const encoder = new TextEncoder();
-            const decoder = new TextDecoder();
-            let socket = new WebSocket("ws://" + window.location.hostname + ":443"); // CHANGE TO WSS FOR PROD
-
-            socket.onopen = function (event) {
-                let tmpRand = new Uint32Array(1);
-                crypto.subtle.getRandomValues(tmpRand);
-                let bits = tmpRand[0];
-
-                socket.send(bits);
-
-            }
-            
-            let state = 0;
-            let saltedPass;
-            let clientKeyH;
-            let bits;
-            socket.onmessage = async function (event) 
+            else if (!hasFile) 
             {
-                if (state === 0) 
-                {
-                    let salt = new Uint32Array(event.data, 0, 32);
-                    let iterCount = (new Uint32Array(event.data, 32, 4))[0];
-                    bits = new Uint32Array(event.data, 36, 16);
-
-                    let passKey = await crypto.subtle.importKey('raw', encoder.encode(password), 'PBKDF2', false, ['deriveBits']);
-                    saltedPass = await crypto.subtle.deriveBits({ name: 'PBKDF2', hash: 'SHA-256', salt, iterations: iterCount }, passKey, 32);
-
-                    let hmacKey = await crypto.subtle.importKey('raw', encoder.encode('Client Key'), { name: 'HMAC', hash: 'SHA-256' }, false, ['sign']);
-                    let clientKey = await crypto.subtle.sign('HMAC', hmacKey, saltedPass);
-                    clientKeyH = await crypto.subtle.digest('SHA-256', clientKey);
-
-                    hmacKey = await crypto.subtle.importKey('raw', bits, { name: 'HMAC', hash: 'SHA-256' }, false, ['sign']);
-                    let clientSign = await crypto.subtle.sign('HMAC', hmacKey, clientKeyH);
-                    let clientProof = new Uint32Array(8);
-                    for (let i = 0; i < 8; i++) clientProof[i] = clientKey[i] ^ clientSign[i];
-                    
-                    socket.send(clientProof);
-                }
-                else if (state === 1) 
-                {
-                    let serverSign = new Uint32Array(event.data, 0, 32);
-
-                    hmacKey = await crypto.subtle.importKey('raw', encoder.encode('Server Key'), { name: 'HMAC', hash: 'SHA-256' }, false, ['sign']);
-                    let serverKey = await crypto.subtle.sign('HMAC', hmacKey, saltedPass);
-                    hmacKey = await crypto.subtle.importKey('raw', bits, { name: 'HMAC', hash: 'SHA-256' }, false, ['sign']);
-                    let serverSignOur = await crypto.subtle.sign('HMAC', hmacKey, clientKeyH);
-
-                    let isSame = true;
-                    for (let i = 0; isSame && i < 8; i++) if (serverSign[i] !== serverSignOur[i]) isSame = false;
-
-                    if (!isSame) alert('bad server');
-                }
-                else {
-                    // Show an actual error message in prod
-                    alert("Oh no the server state is invalid aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
-                }
-                state++;
+                alert("Please upload an avatar!");
+                return false;
             }
+            let data = new FormData();
+            data.set('avatar', myFileInputElement.files[0]);
+            data.set('json_payload', JSON.stringify({ username, password, interests }));
+            fetch('/api/user/signup', { method: 'POST', body: data });
+        })
 
-            return false;
-        });
     </script>
 </body>
 
