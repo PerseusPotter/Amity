@@ -148,7 +148,10 @@ class Table {
         buf.writeBigUInt64BE(data[v.name], cumSum[v.name], v.length);
       } else {
         if (data[v.name] === null) buf.fill(0, cumSum[v.name], cumSum[v.name] + v.length);
-        else data[v.name].copy(buf, cumSum[v.name], 0, v.length);
+        else {
+          data[v.name].copy(buf, cumSum[v.name], 0, v.length);
+          if (data[v.name].length < v.length) buf.fill(0, cumSum[v.name] + data[v.name].length, cumSum[v.name] + v.length);
+        }
       }
     });
 

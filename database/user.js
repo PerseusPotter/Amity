@@ -8,7 +8,7 @@ var Users = new Table('./data/users.stupiddb', [
   {
     name: 'username',
     type: 'string',
-    length: 128
+    length: 32
   },
   {
     name: 'salt',
@@ -26,7 +26,7 @@ var Users = new Table('./data/users.stupiddb', [
     length: 32
   },
   {
-    name: 'avatar',
+    name: 'avatarID',
     type: 'uuid',
     length: 8
   },
@@ -65,7 +65,7 @@ module.exports = {
     let avatarID = snowflake(1);
     // 8MB
     if (avatar.byteLength > 8388608) throw 'image to big';
-    await fs_p.writeFile('./data/avatar/' + avatarID + '.jpg', avatar);
+    await fs_p.writeFile('./data/files/' + avatarID + '.jpg', avatar);
 
     let salt = randomBytes(16);
     let saltedPass = await pbkdf2(password, salt, 10000, 32, 'sha256');
@@ -79,17 +79,20 @@ module.exports = {
     serverKey.update(saltedPass);
     serverKey = serverKey.digest('hex');
 
-    await Users.appendRow({
+    let data = {
       id: userID,
       username,
       salt,
       clientKeyH,
       serverKey,
-      avatar,
+      avatarID,
       friends: null,
       interests1,
       interests2
-    });
+    };
+    await Users.appendRow(data);
+
+    return data;
   },
   async getUser(id) {
     let i;
@@ -124,6 +127,10 @@ module.exports = {
       userCache.set(id, i);
     }
 
+    let old = await this.getUser(id);
+
     await Users.deleteRow(i);
+
+    return old;
   }
 };
