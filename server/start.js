@@ -15,7 +15,7 @@ process.env.thisProto = 'http';
 var onError = function(res, err) {
   if (res.writableEnded) return;
   else if (res.headersSent) return res.end();
-  res.writeHead(200, { 'Content-Type': 'text/plain' });
+  res.writeHead(500, { 'Content-Type': 'text/plain' });
   res.write((err || 'Unknown Error').toString());
   res.end();
 };
@@ -26,6 +26,7 @@ var serverHttp = http.createServer((req, res) => {
 //   onreq('https://', req, res, portHttps).catch(e => onError(res, e));
 // });
 
+var authServer = require('./auth').server;
 module.exports = function() {
   void serverHttp.listen(portHttp, () => {
     console.log(`HttpServer listening on port ${portHttp}`);
@@ -33,4 +34,5 @@ module.exports = function() {
   // void serverHttps.listen(portHttps, () => {
   // console.log(`HttpsServer listening on port ${portHttps}`);
   // });
+  authServer();
 };

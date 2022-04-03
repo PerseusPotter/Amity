@@ -7,6 +7,7 @@ try {
 } catch {
   fs_p = require('fs').promises;
 }
+var path = require('path');
 
 class Channel {
   constructor(id) {
@@ -34,22 +35,30 @@ class Channel {
         length: 2000
       },
       {
-        name: 'attachment',
+        name: 'attachmentID',
         type: 'uuid',
         length: 8
+      },
+      {
+        name: 'attachmentExt',
+        type: 'string',
+        length: 20
       }
     ]);
     this.messageCache = new WeakMap();
   }
 
-  async createMessage(author, timestamp, content, attachment) {
+  async createMessage(author, timestamp, content, attachment, attachmentName) {
     let messageID = snowflake(5);
     let attachmentID;
+    let attachmentExt;
     if (attachment) {
       attachmentID = snowflake(6);
       // 8MB
       if (attachment.byteLength > 8388608) throw 'attachment to big';
-      await fs_p.writeFile('./data/files/' + attachmentID + '.jpg', icon);
+      attachmentExt = path.extname(attachmentName);
+      if (attachmentExt.length > 20) throw 'attachment extension too long';
+      await fs_p.writeFile('./data/files/' + attachmentID + attachmentExt, icon);
     } else attachmentID = 0n;
 
     let data = {
@@ -57,7 +66,8 @@ class Channel {
       author,
       timestamp,
       content,
-      attachmentID
+      attachmentID,
+      attachmentExt
     };
     await this.messages.appendRow(data);
 
@@ -104,6 +114,7 @@ class Channel {
     let old = await this.getMessage(id);
 
     await this.messages.deleteRow(i);
+    this.messageCache.delete(id);
 
     return old;
   }

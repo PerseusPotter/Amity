@@ -9,6 +9,7 @@ let prevCount = 0;
 // 4: channelID
 // 5: messageID
 // 6: attachmentID
+// 7: nonce
 module.exports = function(id, thread = 0) {
   let t = Date.now();
   if (prevTime !== t) {

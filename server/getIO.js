@@ -2,40 +2,30 @@ var fs = require('fs');
 var path = require('path');
 var https = require('https');
 var URL = require('url').URL;
+var createCache = require('./cache');
 
 const CACHE_LENGTH = 60 * 60 * 1000;
 // const CACHE_LENGTH = 1;
-var fileCache = new Map();
+var fileCache = createCache(CACHE_LENGTH);
 let getFile = function(name) {
-  let t = Date.now();
-  for (let [name, data] of fileCache.entries()) {
-    if (t - data.time > CACHE_LENGTH) {
-      fileCache.delete(name);
-    }
-  }
   return new Promise((resolve, reject) => {
     name = path.resolve(__dirname, name);
-    if (fileCache.has(name)) return resolve(fileCache.get(name));
+    if (fileCache.has(name)) return resolve(fileCache.get(name).data);
     if (!fs.existsSync(name)) return reject('File not found: ' + name);
     // no point of streams, it's going into cache
     fs.readFile(name, (err, data) => {
       if (err) return reject(err);
       resolve(data);
-      data.time = Date.now();
-      fileCache.set(name, data);
+      let item = fileCache.create(name);
+      item.data = data;
     });
   });
 };
 
-var webCache = new Map();
+var webCache = createCache(CACHE_LENGTH);
 let getURL = function(url) {
-  let t = Date.now();
-  for (let [name, data] of webCache.entries()) {
-    if (t - data.time > CACHE_LENGTH) {
-      webCache.delete(name);
-    }
-  }
   return new Promise((resolve, reject) => {
+    if (webCache.has(url)) return resolve(webCache.get(url).data);
     url = new URL(url);
     let options = {
       hostname: url.hostname,
@@ -53,8 +43,8 @@ let getURL = function(url) {
       res.on('end', () => {
         let buf = Buffer.concat(chunks);
         resolve(buf);
-        buf.time = Date.now();
-        webCache.set(url, buf);
+        let item = webCache.create(url);
+        item.data = buf;
       });
       res.on('error', e => reject(e));
     });

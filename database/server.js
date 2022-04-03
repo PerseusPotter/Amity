@@ -119,6 +119,7 @@ module.exports = {
     let old = await this.getServer(id);
 
     await Servers.deleteRow(i);
+    serverCache.delete(id);
 
     return old;
   }

@@ -91,7 +91,7 @@ class Table {
       let buf = Buffer.allocUnsafe(4096);
       let index = totalLength;
       while ((index -= 4096) >= 0) {
-        let { bytesRead } = fh.read(buf, 0, len, index);
+        let { bytesRead } = await fh.read(buf, 0, len, index);
         if (bytesRead < 4096) {
           q.forEach(v => v[4](-1));
           break;
@@ -122,7 +122,7 @@ class Table {
 
     const len = this.cumSumT;
     let buf = Buffer.allocUnsafe(len);
-    let { bytesRead } = fh.read(buf, 0, len, index);
+    let { bytesRead } = await fh.read(buf, 0, len, index);
     if (bytesRead < len) return null;
 
     let data = Object.create(null);

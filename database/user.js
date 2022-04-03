@@ -58,9 +58,12 @@ try {
   fs_p = require('fs').promises;
 }
 
+let usernameCache = new WeakMap();
 let userCache = new WeakMap();
 module.exports = {
   async createUser(username, password, avatar, interests1, interests2) {
+    if (await this.findUser(username)) throw 'user with that username already exists';
+
     let userID = snowflake(0);
     let avatarID = snowflake(1);
     // 8MB
@@ -94,6 +97,20 @@ module.exports = {
 
     return data;
   },
+  async findUser(name) {
+    let i;
+    if (usernameCache.has(name)) i = usernameCache.get(name);
+    else {
+      i = await Users.findRow('username', name);
+      if (i === -1) return null;
+      usernameCache.set(name, i);
+    }
+
+    let data = await Users.readRow(i);
+    userCache.set(data.id, i);
+
+    return data;
+  },
   async getUser(id) {
     let i;
     if (userCache.has(id)) i = userCache.get(id);
@@ -104,6 +121,7 @@ module.exports = {
     }
 
     let data = await Users.readRow(i);
+    usernameCache.set(data.username, i);
 
     return data;
   },
@@ -117,6 +135,9 @@ module.exports = {
     }
 
     await Users.writeRow(data, i);
+    usernameCache.set(data.username, i);
+
+    return data;
   },
   async deleteUser(id) {
     let i;
@@ -130,6 +151,8 @@ module.exports = {
     let old = await this.getUser(id);
 
     await Users.deleteRow(i);
+    userCache.delete(id);
+    usernameCache.delete(old.username);
 
     return old;
   }
