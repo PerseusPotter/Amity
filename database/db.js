@@ -83,19 +83,22 @@ class Table {
         await this.fhP;
         fh = this.fh;
       }
+
+      if (this.totalLength === null) this.totalLength = (await fh.stat()).size;
+
       const q = this.readQueue;
       const len = this.cumSumT;
       let buf = Buffer.allocUnsafe(4096);
-      let index = 0;
-      while (true) {
-        let { bytesRead } = fh.read(buf, 0, len, index);
-        if (bytesRead < len) {
+      let index = totalLength;
+      while ((index -= 4096) >= 0) {
+        let { bytesRead } = await fh.read(buf, 0, len, index);
+        if (bytesRead < 4096) {
           q.forEach(v => v[4](-1));
           break;
         }
 
-        let pos = 0;
-        while (pos < 4096) {
+        let pos = 4096;
+        while ((pos -= len) >= 0) {
           q.forEach((v, i) => {
             let val = parseValue(buf, pos + v[0], v[1], v[2]);
             if (val instanceof Buffer ? val.equals(v[3]) : val === v[3]) {
@@ -103,9 +106,7 @@ class Table {
               q.splice(i, 1);
             }
           });
-          pos += len;
         }
-        index += 4096;
       }
     }
 
@@ -121,7 +122,7 @@ class Table {
 
     const len = this.cumSumT;
     let buf = Buffer.allocUnsafe(len);
-    let { bytesRead } = fh.read(buf, 0, len, index);
+    let { bytesRead } = await fh.read(buf, 0, len, index);
     if (bytesRead < len) return null;
 
     let data = Object.create(null);
@@ -148,7 +149,10 @@ class Table {
         buf.writeBigUInt64BE(data[v.name], cumSum[v.name], v.length);
       } else {
         if (data[v.name] === null) buf.fill(0, cumSum[v.name], cumSum[v.name] + v.length);
-        else data[v.name].copy(buf, cumSum[v.name], 0, v.length);
+        else {
+          data[v.name].copy(buf, cumSum[v.name], 0, v.length);
+          if (data[v.name].length < v.length) buf.fill(0, cumSum[v.name] + data[v.name].length, cumSum[v.name] + v.length);
+        }
       }
     });
 

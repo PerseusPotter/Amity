@@ -8,7 +8,7 @@ var Users = new Table('./data/users.stupiddb', [
   {
     name: 'username',
     type: 'string',
-    length: 128
+    length: 32
   },
   {
     name: 'salt',
@@ -26,7 +26,7 @@ var Users = new Table('./data/users.stupiddb', [
     length: 32
   },
   {
-    name: 'avatar',
+    name: 'avatarID',
     type: 'uuid',
     length: 8
   },
@@ -36,14 +36,9 @@ var Users = new Table('./data/users.stupiddb', [
     length: 8 * 200
   },
   {
-    name: 'interests1',
-    type: 'number',
-    length: 4
-  },
-  {
-    name: 'interests2',
-    type: 'number',
-    length: 4
+    name: 'interests',
+    type: 'uuid',
+    length: 8
   }
 ]);
 
@@ -57,15 +52,19 @@ try {
 } catch {
   fs_p = require('fs').promises;
 }
+var path = require('path');
 
+let usernameCache = new WeakMap();
 let userCache = new WeakMap();
 module.exports = {
-  async createUser(username, password, avatar, interests1, interests2) {
+  async createUser(username, password, avatar, interests) {
+    if (await this.findUser(username)) throw 'user with that username already exists';
+
     let userID = snowflake(0);
     let avatarID = snowflake(1);
     // 8MB
     if (avatar.byteLength > 8388608) throw 'image to big';
-    await fs_p.writeFile('./data/avatar/' + avatarID + '.jpg', avatar);
+    await fs_p.writeFile(path.join(__dirnamem, './data/files/', avatarID + '.jpg'), avatar);
 
     let salt = randomBytes(16);
     let saltedPass = await pbkdf2(password, salt, 10000, 32, 'sha256');
@@ -79,17 +78,33 @@ module.exports = {
     serverKey.update(saltedPass);
     serverKey = serverKey.digest('hex');
 
-    await Users.appendRow({
+    let data = {
       id: userID,
       username,
       salt,
       clientKeyH,
       serverKey,
-      avatar,
+      avatarID,
       friends: null,
-      interests1,
-      interests2
-    });
+      interests
+    };
+    await Users.appendRow(data);
+
+    return data;
+  },
+  async findUser(name) {
+    let i;
+    if (usernameCache.has(name)) i = usernameCache.get(name);
+    else {
+      i = await Users.findRow('username', name);
+      if (i === -1) return null;
+      usernameCache.set(name, i);
+    }
+
+    let data = await Users.readRow(i);
+    userCache.set(data.id, i);
+
+    return data;
   },
   async getUser(id) {
     let i;
@@ -101,6 +116,7 @@ module.exports = {
     }
 
     let data = await Users.readRow(i);
+    usernameCache.set(data.username, i);
 
     return data;
   },
@@ -114,6 +130,9 @@ module.exports = {
     }
 
     await Users.writeRow(data, i);
+    usernameCache.set(data.username, i);
+
+    return data;
   },
   async deleteUser(id) {
     let i;
@@ -124,6 +143,12 @@ module.exports = {
       userCache.set(id, i);
     }
 
+    let old = await this.getUser(id);
+
     await Users.deleteRow(i);
+    userCache.delete(id);
+    usernameCache.delete(old.username);
+
+    return old;
   }
 };
