@@ -4,11 +4,11 @@ var getUUID = function() {
   let uuid;
   let loops = 0;
   do {
-    uuid = crypto.randomBytes(16).toString('hex');
+    uuid = crypto.randomBytes(32).toString('hex');
     loops++;
     if (loops > 5) {
       console.log('wtf');
-      uuid = crypto.randomBytes(16);
+      uuid = crypto.randomBytes(32);
       do {
         increment:
         for (let i = 0; i < uuid.length; i++) {

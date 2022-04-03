@@ -7,10 +7,19 @@ try {
 
 const parseValueDict = {
   string(buf, offset, len) {
-    return buf.subarray(offset, len).toString();
+    return buf.subarray(offset, offset + len).toString();
   },
   number(buf, offset, len) {
     return buf.readUIntLE(offset, len);
+  },
+  buffer(buf, offset, len) {
+    return buf.subarray(offset, offset + len);
+  },
+  hex(buf, offset, len) {
+    return buf.subarray(offset, offset + len).toString('hex');
+  },
+  uuid(buf, offset, len) {
+    return buf.readBigUInt64LE(offset);
   }
 };
 let parseValue = function(buf, offset, len, type) {
@@ -28,6 +37,7 @@ class Table {
     let prom = fs_p.open(filename, 'r+');
     prom.then(fh => this.fh = fh);
     this.fhP = prom;
+    this.totalLength = null;
     this.dataDescriptor = dataTypes;
     let types = Object.create(null);
     let lengths = Object.create(null);
@@ -55,6 +65,9 @@ class Table {
     this.cumSumT = cumSumT;
     this.readQueue = [];
     this.prevReadTime = Date.now();
+    this.writeQueue = [];
+    this.prevWriteTime = Date.now();
+    this.isWriting = false;
   }
 
   async findRow(key, value) {
@@ -84,7 +97,8 @@ class Table {
         let pos = 0;
         while (pos < 4096) {
           q.forEach((v, i) => {
-            if (parseValue(buf, pos + v[0], v[1], v[2]) === v[3]) {
+            let val = parseValue(buf, pos + v[0], v[1], v[2]);
+            if (val instanceof Buffer ? val.equals(v[3]) : val === v[3]) {
               v[4](index);
               q.splice(i, 1);
             }
@@ -119,15 +133,8 @@ class Table {
     return data;
   }
 
-  async writeRow(data, index) {
-    let fh = this.fh;
-    if (!this.fh) {
-      await this.fhP;
-      fh = this.fh;
-    }
-
-    const len = this.cumSumT;
-    let buf = Buffer.allocUnsafe(len);
+  _getRowBuf(data) {
+    let buf = Buffer.allocUnsafe(this.cumSumT);
 
     const cumSum = this.cumSum;
     this.dataDescriptor.forEach(v => {
@@ -135,10 +142,81 @@ class Table {
         buf.write(data[v.name], cumSum[v.name], v.length);
       } else if (v.type === 'number') {
         buf.writeUIntLE(data[v.name], cumSum[v.name], v.length);
+      } else if (v.type === 'hex') {
+        buf.write(data[v.name], cumSum[v.name], v.length, 'hex');
+      } else if (v.type === 'uuid') {
+        buf.writeBigUInt64BE(data[v.name], cumSum[v.name], v.length);
+      } else {
+        if (data[v.name] === null) buf.fill(0, cumSum[v.name], cumSum[v.name] + v.length);
+        else data[v.name].copy(buf, cumSum[v.name], 0, v.length);
       }
     });
 
-    await fh.write(buf, 0, len, index);
+    return buf;
+  }
+
+  async writeRow(data, index) {
+    let fh = this.fh;
+    if (!this.fh) {
+      await this.fhP;
+      fh = this.fh;
+    }
+
+    if (this.totalLength === null) this.totalLength = (await fh.stat()).size;
+    if (index >= this.totalLength) return false;
+
+    let buf = this._getRowBuf(data);
+
+    this.writeQueue.push([buf, index]);
+    let t = Date.now();
+    if (t - this.prevWriteTime > 100) await this._flushWrite();
+    this.prevWriteTime = t;
+  }
+
+  async _flushWrite() {
+    const q = this.writeQueue;
+    if (this.isWriting || q.length === 0) return;
+    this.isWriting = true;
+
+    const len = this.cumSumT;
+    let item;
+    while ((item = q.pop()) !== undefined) {
+      await fh.write(item[0], 0, len, item[1]);
+    }
+
+    this.isWriting = false;
+  }
+
+  async appendRow(data) {
+    let fh = this.fh;
+    if (!this.fh) {
+      await this.fhP;
+      fh = this.fh;
+    }
+
+    if (this.totalLength === null) this.totalLength = (await fh.stat()).size;
+
+    let l = this.totalLength;
+    this.totalLength += this.cumSumT;
+    await this.writeRow(data, l);
+  }
+
+  async deleteRow(index) {
+    let fh = this.fh;
+    if (!this.fh) {
+      await this.fhP;
+      fh = this.fh;
+    }
+
+    if (this.totalLength === null) this.totalLength = (await fh.stat()).size;
+    if (index >= this.totalLength) return false;
+
+    let buf = Buffer.allocUnsafe(this.cumSumT).fill(0);
+
+    this.writeQueue.push([buf, index]);
+    let t = Date.now();
+    if (t - this.prevWriteTime > 100) await this._flushWrite();
+    this.prevWriteTime = t;
   }
 }
 
