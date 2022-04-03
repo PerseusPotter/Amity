@@ -84,39 +84,90 @@
     <div class="title">
         <h1 id="title">Sign up for Amity</h1>
     </div>
-    <form onsubmit="signUp();">
+    <form id="register-form">
         <div id="signup-sheet">
-            <input id="username" pattern="[ -~]+?" type="text" placeholder="Username" maxlength="128">
-            <input id="password" pattern="[ -~]+?" type="password" placeholder="Password" maxlength="128">
-            <input id="confirmpassword" pattern="[ -~]+?" type="password" placeholder="Confirm Password"
+            <input id="username" autocomplete="username" pattern="[ -~]+?" type="text" placeholder="Username"
                 maxlength="128">
-            <button id="nextButton" type="button">Sign Up</button> <!-- Add an onclick event to show the next page -->
+            <input id="password" autocomplete="new-password" pattern="[ -~]+?" type="password" placeholder="Password"
+                maxlength="128">
+            <input id="confirmpassword" autocomplete="new-password" pattern="[ -~]+?" type="password"
+                placeholder="Confirm Password" maxlength="128">
+            <button id="nextButton" type="submit">Sign Up</button> <!-- Add an onclick event to show the next page -->
         </div>
     </form>
     <script>
-        function signUp() {
+        document.addEventListener("submit", (evt) => {
+            evt.preventDefault();
             let username = document.getElementById("username").value;
             let password = document.getElementById("password").value;
             if (password !== document.getElementById("confirmpassword").value) {
                 // REPLACE THIS WITH A PROPER NOTIFICATION
                 alert("Passwords do not match!");
-                return;
+                return false;
             }
 
             const encoder = new TextEncoder();
             const decoder = new TextDecoder();
-            let socket = new WebSocket("wss://" + window.location.hostname + ":443");
-            let clientSalt = new Uint32Array(2);
-            crypto.getRandomValues(clientSalt);
-            clientSalt = clientSalt[0].toString(2) + clientSalt(1).toString(2);
-            console.log(clientSalt);
-            exampleSocket.send(JSON.stringify(
+            let socket = new WebSocket("ws://" + window.location.hostname + ":443"); // CHANGE TO WSS FOR PROD
+
+            socket.onopen = function (event) {
+                let tmpRand = new Uint32Array(1);
+                crypto.subtle.getRandomValues(tmpRand);
+                let bits = tmpRand[0];
+
+                socket.send(bits);
+
+            }
+            
+            let state = 0;
+            let saltedPass;
+            let clientKeyH;
+            let bits;
+            socket.onmessage = async function (event) 
+            {
+                if (state === 0) 
                 {
-                    "username": username,
-                    "bits": clientSalt
+                    let salt = new Uint32Array(event.data, 0, 32);
+                    let iterCount = (new Uint32Array(event.data, 32, 4))[0];
+                    bits = new Uint32Array(event.data, 36, 16);
+
+                    let passKey = await crypto.subtle.importKey('raw', encoder.encode(password), 'PBKDF2', false, ['deriveBits']);
+                    saltedPass = await crypto.subtle.deriveBits({ name: 'PBKDF2', hash: 'SHA-256', salt, iterations: iterCount }, passKey, 32);
+
+                    let hmacKey = await crypto.subtle.importKey('raw', encoder.encode('Client Key'), { name: 'HMAC', hash: 'SHA-256' }, false, ['sign']);
+                    let clientKey = await crypto.subtle.sign('HMAC', hmacKey, saltedPass);
+                    clientKeyH = await crypto.subtle.digest('SHA-256', clientKey);
+
+                    hmacKey = await crypto.subtle.importKey('raw', bits, { name: 'HMAC', hash: 'SHA-256' }, false, ['sign']);
+                    let clientSign = await crypto.subtle.sign('HMAC', hmacKey, clientKeyH);
+                    let clientProof = new Uint32Array(8);
+                    for (let i = 0; i < 8; i++) clientProof[i] = clientKey[i] ^ clientSign[i];
+                    
+                    socket.send(clientProof);
                 }
-            ));
-        }
+                else if (state === 1) 
+                {
+                    let serverSign = new Uint32Array(event.data, 0, 32);
+
+                    hmacKey = await crypto.subtle.importKey('raw', encoder.encode('Server Key'), { name: 'HMAC', hash: 'SHA-256' }, false, ['sign']);
+                    let serverKey = await crypto.subtle.sign('HMAC', hmacKey, saltedPass);
+                    hmacKey = await crypto.subtle.importKey('raw', bits, { name: 'HMAC', hash: 'SHA-256' }, false, ['sign']);
+                    let serverSignOur = await crypto.subtle.sign('HMAC', hmacKey, clientKeyH);
+
+                    let isSame = true;
+                    for (let i = 0; isSame && i < 8; i++) if (serverSign[i] !== serverSignOur[i]) isSame = false;
+
+                    if (!isSame) alert('bad server');
+                }
+                else {
+                    // Show an actual error message in prod
+                    alert("Oh no the server state is invalid aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
+                }
+                state++;
+            }
+
+            return false;
+        });
     </script>
 </body>
 

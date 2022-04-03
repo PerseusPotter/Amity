@@ -11,11 +11,81 @@
             text-align: center;
             position: relative;
         }
+        #holdingDiv {
+            text-align: center;
+            width: 100%;
+            height: 100%;
+        }
+
+        #channelList {
+            border: dotted black;
+        }
+        #eventList {
+            border: dotted red;
+        }
+        #messageList {
+            border: dotted blue;
+        }
+        #messageBox {
+            display: none;
+            /* border: dotted black; */
+        }
+        #clubSelector {
+            position: fixed;
+            /* border: 1px dotted black; */
+            width: 100%;
+            height: 5rem;
+            bottom: 0.3rem;
+            left: 0;
+        }
+
+        .club {
+            max-width: 5rem;
+            max-height: 5rem;
+            border: 0.063rem solid black;
+            border-radius: 100%;
+            cursor: pointer;
+        }
+        .club.selected {
+            max-width: 5rem;
+            max-height: 5rem;
+            border-radius: 1.5rem;
+        }
+
+
+        img {
+            max-width: 2.5rem;
+            max-height: 2.5rem;
+        }
     </style>
 </head>
 
 <body>
-    <ol id="messageList"></ol>
-    <div style="width: 1px; height: 88px;"></div>
-    <div id="errorWrap"></div>
+
+    <ol id="channelList">
+        <ul>#general</ul>
+        <ul>#memes</ul>
+        <ol id="eventList">
+            <ul>4/2/22 2:45 PM -- Work on this</ul>
+            <ul>4/3/22 1:00 PM -- Deadline for project</ul>
+        </ol>
+    </ol>
+    <ol id="messageList">
+        <ul><img src="https://cdn.discordapp.com/avatars/572891668966277140/4e0320eff8f94e47d0dcd43bcfc0e840.webp?size=80">Message</ul>
+    </ol>
+    <input id="messageBox" type="text">
+    <div id="clubSelector">
+        <img class="club selected" src="https://cdn.discordapp.com/avatars/572891668966277140/4e0320eff8f94e47d0dcd43bcfc0e840.webp?size=80">
+        <img class="club" src="https://cdn.discordapp.com/avatars/200381124738809856/fa502f0e7799817d32fbcc913aaf1665.webp?size=80">
+        <img class="club" src="https://cdn.discordapp.com/avatars/397170615812882443/8abf7a26936aed1a71dd5880ab34b9a7.webp?size=80">
+    </div>
+
+
+    <script>
+function onMessage(message) 
+{
+
+}
+    </script>
 </body>
+</html>
