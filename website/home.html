@@ -2,174 +2,133 @@
 <html>
 
 <head>
-  <meta charset="utf-8">
-  <title>Discorda</title>
-  <style>
-    * {
-      color: rgb(220, 221, 222);
-      font-family: Whitney, Helvetica Neue, Helvetica, Arial, sans-serif;
-      font-size: 16px;
-      font-weight: 400;
-      user-select: none;
-    }
-
-    html,
-    body {
-      width: 100%;
-      height: 100%;
-    }
-
-    body {
-      margin: 0;
-      background-color: rgb(54, 57, 63);
-    }
-
-    input[type=text] {
-      user-select: auto;
-      background-color: rgba(0, 0, 0, 0.1);
-      border: 1px solid rgba(0, 0, 0, 0.3);
-      border-radius: 3px;
-      box-sizing: border-box;
-      line-height: 16px;
-      margin: 0 0 20px 0;
-      padding: 0;
-      transition: border-color .2s ease-in-out;
-      padding: 10px;
-      height: 40px;
-      width: 414px;
-      text-align: start;
-    }
-
-    input[type=text]:focus {
-      outline: none;
-      border: 1px solid rgb(4, 4, 5);
-    }
-
-    h5 {
-      color: rgb(185, 187, 190);
-      cursor: default;
-      font-family: Ginto, Helvetica Neue, Helvetica, Arial, sans-serif;
-      font-size: 12px;
-      font-weight: 600;
-      line-height: 16px;
-      margin: 0 0 8px 0;
-      padding: 0;
-      text-transform: uppercase;
-      vertical-align: baseline;
-      text-align: start;
-    }
-
-    input[type=file] {
-      display: none;
-    }
-
-    .custom-file-upload {
-      display: inline-block;
-      padding-top: 0.5em;
-      cursor: pointer;
-      margin-left: -3em;
-      position: absolute;
-    }
-
-    #submit {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background-color: rgb(88, 101, 242);
-      border: none;
-      border-radius: 3px;
-      box-sizing: border-box;
-      color: rgb(255, 255, 255);
-      cursor: pointer;
-      font-weight: 500;
-      height: 44px;
-      line-height: 24px;
-      outline: none;
-      padding: 2px 16px 2px 16px;
-      text-align: center;
-      transition: background-color .17s ease, color .17s ease;
-      width: 414px;
-    }
-
-    #submit:hover {
-      background-color: rgb(71, 82, 196);
-    }
-
-    #container1 {
-      height: 100%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-direction: column;
-    }
-
-    #container2 {
-      height: 100%;
-    }
-
-    #addLink {
-      flex-basis: 10vh;
-    }
-
-    form {
-      flex-grow: 1;
-      margin-top: 20vh;
-    }
-  </style>
-  <script>
-    window.addEventListener('load', () => {
-      let submitButton = document.getElementById('submit');
-      let avatarFile = document.getElementById('avatarFile');
-      let avatarURL = document.getElementById('avatarURL');
-      let ignoreURLValue = '';
-      avatarFile.addEventListener('change', evn => {
-        avatarURL.required = !avatarFile.files.length;
-        if (avatarFile.files.length) {
-          let name = avatarFile.files[0].name;
-          avatarURL.value = name;
-          ignoreURLValue = name;
+    <meta charset="utf-8">
+    <title>Welcome To Amity</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" integrity="sha512-KfkfwYDsLkIlwQp6LFnl8zNdLGxu9YAA1QvwINks4PhcElQSvqcyVLLD9aMhXd13uQjoXtEKNosOWaZqXgel0g==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <style>
+        :root {
+            font-size: 16px;
+            font-family: arial;
+            text-align: center;
+            position: relative;
         }
-      });
-      submitButton.addEventListener('click', () => {
-        let formData = {};
-        formData.name = document.getElementById('name').value;
-        (async function() {
-          let data;
-          if (avatarURL.value && avatarURL.value !== ignoreURLValue) {
-            data = await fetch(avatarURL.value);
-            data = await data.blob();
-          } else if (avatarFile.files) {
-            data = avatarFile.files[0];
-          } else return;
-          let reader = new FileReader();
-          reader.addEventListener('loadend', () => {
-            let base64 = reader.result.replace(/data:.*?\/.*?;base64,\s*/, '');
-            formData.avatar = base64;
-            fetch('/submit', { method: 'POST', body: JSON.stringify(formData) }).then(() => {
-              window.location.href = window.location.href;
-            });
-          }, { once: true });
-          reader.readAsDataURL(data);
-        }()).catch(e => console.log(e));
-      });
-    }, { once: true });
-  </script>
+        #home-button {
+            position: absolute;
+            top: 2rem;
+            left: 2rem;
+            font-size: 2rem;
+            color: grey;
+            cursor: pointer;
+        }
+        #login-button {
+            position: absolute;
+            top: 2rem;
+            right: 2rem;
+            font-size: 2rem;
+            border: none;
+            background-color: transparent;
+            cursor: pointer;
+        }
+
+        #login-panel {
+            visibility: hidden;
+            position: absolute;
+            top: 3rem;
+            right: 3rem;
+            border-style: groove;
+            width: 20rem;
+            height: 20rem;
+            background-color: white;
+        }
+
+        #login-area {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            row-gap: .25rem;
+        }
+
+        #username,
+        #password {
+            height: 3rem;
+            max-width: 32rem;
+            border-radius: 1rem;
+            text-align: center;
+            position: relative;
+        }
+
+        #loginButton {
+            position: relative;
+            border: none;
+            padding: 1rem 2rem;
+            background: #0069ed;
+            color: #ffffff;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background 250ms ease-in-out,
+                transform 150ms ease;
+            border-radius: 1rem;
+            flex-wrap: nowrap;
+        }
+
+        #loginButton:hover,
+        #loginButton:focus {
+            background: #0053ba;
+        }
+
+        #loginButton:focus {
+            outline: 1px solid #fff;
+            outline-offset: -4px;
+        }
+
+        #loginButton:active {
+            transform: scale(0.99);
+        }
+
+        input:invalid {
+            background-color: palevioletred;
+        }
+
+        #about {
+            margin: 0 auto;
+            width: 32rem;
+            border: 2px dotted black;
+        }
+    </style>
 </head>
 
 <body>
-  <div id="container1">
-    <div id="container2">
-      <form onsubmit="event.preventDefault(); return false;">
-        <h5>Username</h5>
-        <input type="text" autocomplete="off" name="name" id="name" required>
-        <h5>Avatar URL</h5>
-        <input type="text" autocomplete="off" name="avatar" id="avatarURL" required>
-        <label for="avatarFile" class="custom-file-upload"><span style="margin-left: 0.5em;">📁</span></label>
-        <input type="file" accept="image/png, image/gif, image/jpeg" id="avatarFile">
-        <button type="submit" id="submit">Login</button>
-      </form>
+    
+    <div id="home-button" class="fas fa-home"></div>
+    <h1>Welcome to Amity</h1>
+    <button id="login-button" class="fa fa-sign-in"></button>
+    <div id="login-panel">
+        <h2>Sign in</h2>
+        <form id="login-area">
+            <input id="username" pattern="[ -~]+?" type="text" placeholder="Username" />
+            <input id="password" pattern="[ -~]+?" type="password" placeholder="Password" />
+            <input id="loginButton" type="submit" value="Login" />
+        </form>
+        <p>Don't have an account? <a href="signup.html">Register</a></p>
     </div>
-  </div>
+    <div id="about">
+        <p>Turn your club up to 11 with Amity.</p>
+        <p>A description about it would go here with fancy big words</p>
+        <p>The border here is just for styling purposes and should be removed</p>
+    </div>
+    <script>
+        document.addEventListener("click", (event) => {
+            if (!document.getElementById("login-panel").contains(event.target)) 
+            {
+                document.getElementById("login-panel").style.visibility = "hidden";
+            }
+            if (event.target.id === "login-button") 
+            {
+                document.getElementById("login-panel").style.visibility = "visible";
+            }
+        })
+    </script>
 </body>
 
 </html>
