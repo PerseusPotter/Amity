@@ -14,7 +14,10 @@ var finishStream = function(stream) {
 };
 
 let handlers = {
-  user: require('./api/user')
+  user: require('./api/user'),
+  server: require('./api/server'),
+  channel: require('./api/channel'),
+  files: require('./api/files')
 };
 module.exports = async function(req, res, pathname, searchParams) {
   if (req.headers['content-length'] > 10485760) res.end();
@@ -26,7 +29,8 @@ module.exports = async function(req, res, pathname, searchParams) {
 
   let returnVal = await handler(req, res, userID, paths, searchParams);
 
-  if (returnVal === 0) res.writeHead(200);
+  if (returnVal === -1);
+  else if (returnVal === 0) res.writeHead(200);
   else if (returnVal === 1) res.writeHead(404);
   else if (returnVal === 2) {
     res.writeHead(400, { 'Content-Type': 'text/plain' });
@@ -53,27 +57,27 @@ add friends
 remove friends
  - set interests
  - delete account
-get servers
-get server name
-get server icon
-get server owner
-get server interests
-get server members
-get server channels
-set server name
-set server icon
-set server visibility
-change server ownership
-set server interests
-join server
-leave server
+ - get servers
+ - get server name
+ - get server icon
+ - get server owner
+ - get server interests
+ - get server members
+ - get server channels
+ - set server name
+ - set server icon
+ - set server visibility
+ - change server ownership
+ - set server interests
+ - join server
+ - leave server
 server invite
 kick from server
-add channel
+ - add channel
 rename channel
 delete channel
-send message
-read message
+ - send message
+ - read message
 (also for owner ↓)
 edit message
 delete message

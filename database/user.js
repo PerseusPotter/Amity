@@ -33,7 +33,12 @@ var Users = new Table('./data/users.stupiddb', [
   {
     name: 'friends',
     type: 'buffer',
-    length: 8 * 200
+    length: 8 * 100
+  },
+  {
+    name: 'servers',
+    type: 'buffer',
+    length: 8 * 100
   },
   {
     name: 'interests',
@@ -86,6 +91,7 @@ module.exports = {
       serverKey,
       avatarID,
       friends: null,
+      servers: null,
       interests
     };
     await Users.appendRow(data);
