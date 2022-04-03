@@ -1,6 +1,5 @@
 var path = require('path');
 var { file: getFile } = require('./getIO');
-var auth = require('./auth').getUser;
 var api = require('./api');
 
 let fileTypes = {
@@ -32,7 +31,7 @@ var files = (function() {
 var onrequest = async function(protocol, req, res, port) {
   let { pathname, searchParams } = new URL(req.url, 'https://localhost');
 
-  if (pathname.startsWith('/api/')) return api(req, res, auth(req), pathname, searchParams);
+  if (pathname.startsWith('/api/')) return await api(req, res, pathname, searchParams);
 
   if (pathname === '/') {
     let site;

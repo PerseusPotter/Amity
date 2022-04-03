@@ -6,10 +6,26 @@ const TOKEN_CACHE_LEN = 24 * 60 * 60 * 1000;
 var tokens = createCache(TOKEN_CACHE_LEN);
 var cookies = require('./cookies');
 
+var _getToken = function(req) {
+  let authHead = req.headers.authorization || cookies.get(req, 'loginToken');
+  if (!authHead) throw 'no authentication provided';
+
+  authHead = authHead.split(' ');
+  if (authHead.length <= 1 || authHead[0] !== 'Basic') throw 'malformed authentication';
+
+  authHead = Buffer.from(authHead[1], 'base64');
+  let [type, token] = authHead.toString().split(':');
+  if (!(type && token) || type !== 'token') throw 'malformed authentication';
+
+  if (!tokens.has(token)) throw 'invalid authentication';
+  return token;
+};
+
 var _ws = require('ws');
 var wsPort = 8080;
 module.exports = {
   server() {
+    // TODO: secure
     var wss = new _ws.WebSocketServer({ port: wsPort });
     wss.on('connection', ws => {
       let timeout = setTimeout(ws.close, 10000);
@@ -58,7 +74,6 @@ module.exports = {
             serverSign.update(user.serverKey);
             serverSign = serverSign.digest();
 
-            // TODO: generate token
             let item = tokens.create();
             item.userID = user.id;
             ws.send(Buffer.concat([serverSign, item.uuid]));
@@ -77,17 +92,9 @@ module.exports = {
     });
   },
   getUser(req) {
-    let authHead = req.headers.authorization || cookies.get(req, 'loginToken');
-    if (!authHead) throw 'no authentication provided';
-
-    authHead = authHead.split(' ');
-    if (authHead.length <= 1 || authHead[0] !== 'Basic') throw 'malformed authentication';
-
-    authHead = Buffer.from(authHead[1], 'base64');
-    let [type, token] = authHead.toString().split(':');
-    if (!(type && token) || type !== 'token') throw 'malformed authentication';
-
-    if (!tokens.has(token)) throw 'invalid authentication';
-    return tokens.get(token).userID;
+    return tokens.get(_getToken(req)).userID;
+  },
+  logout(req) {
+    tokens.delete(_getToken(req));
   }
 };
