@@ -4,6 +4,7 @@ try {
 } catch {
   fs_p = require('fs').promises;
 }
+var path = require('path');
 
 const parseValueDict = {
   string(buf, offset, len) {
@@ -33,8 +34,8 @@ let getPromise = function() {
   });
 };
 class Table {
-  constructor(filename, dataTypes) {
-    let prom = fs_p.open(filename, 'r+');
+  constructor(filename, dataTypes, create = false) {
+    let prom = fs_p.open(path.join(__dirname, filename), create ? 'w+' : 'r+');
     prom.then(fh => this.fh = fh);
     this.fhP = prom;
     this.totalLength = null;

@@ -11,6 +11,7 @@ var path = require('path');
 
 class Channel {
   constructor(id) {
+    let createTable = !id;
     if (!id) id = snowflake(4);
     this.id = id;
     this.messages = new Table(`./data/channels/${this.id}.stupiddb`, [
@@ -44,7 +45,7 @@ class Channel {
         type: 'string',
         length: 20
       }
-    ]);
+    ], createTable);
     this.messageCache = new WeakMap();
   }
 

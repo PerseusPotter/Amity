@@ -75,7 +75,8 @@ module.exports = {
       iconID,
       interests,
       members: mBuf,
-      channels: cBuf
+      channels: cBuf,
+      visibility: 1
     };
     await Servers.appendRow(data);
 
@@ -122,5 +123,8 @@ module.exports = {
     serverCache.delete(id);
 
     return old;
+  },
+  get table() {
+    return Servers;
   }
 };
