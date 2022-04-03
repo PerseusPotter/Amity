@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="utf-8">
-    <title>Welcome To Amity</title>
+    <title>Welcome To Circa</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" integrity="sha512-KfkfwYDsLkIlwQp6LFnl8zNdLGxu9YAA1QvwINks4PhcElQSvqcyVLLD9aMhXd13uQjoXtEKNosOWaZqXgel0g==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <style>
         :root {
@@ -93,7 +93,7 @@
         #about {
             margin: 0 auto;
             width: 32rem;
-            border: 2px dotted black;
+            /* border: 2px dotted black; */
         }
     </style>
 </head>
@@ -101,7 +101,7 @@
 <body>
     
     <div id="home-button" class="fas fa-home"></div>
-    <h1>Welcome to Amity</h1>
+    <h1>Welcome to Circa</h1>
     <button id="login-button" class="fa fa-sign-in"></button>
     <div id="login-panel">
         <h2>Sign in</h2>
@@ -113,9 +113,8 @@
         <p>Don't have an account? <a href="signup.html">Register</a></p>
     </div>
     <div id="about">
-        <p>Turn your club up to 11 with Amity.</p>
-        <p>A description about it would go here with fancy big words</p>
-        <p>The border here is just for styling purposes and should be removed</p>
+        <p>Turn your club up to 11 with Circa.</p>
+        <p>Find out more <a href="https://youtu.be/D50cBJ5j28U" target="_blank">here</a></p>
     </div>
     <script>
         document.addEventListener("click", (event) => {
@@ -182,6 +181,8 @@
 
                     let isSame = true;
                     for (let i = 0; isSame && i < 8; i++) if (serverSign[i] !== serverSignOur[i]) isSame = false;
+
+                    document.cookie = "loginToken=" + new Uint32Array(event.data, 32, 64);
 
                     if (!isSame) console.error("Bad server!");
                 }

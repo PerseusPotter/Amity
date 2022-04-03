@@ -2,7 +2,7 @@
 <html>
 
 <head>
-    <title>Sign up for Amity</title>
+    <title>Sign up for Circa</title>
     <style>
         :root {
             font-size: 16px;
@@ -81,6 +81,20 @@
         input:invalid {
             background-color: palevioletred;
         }
+
+        #checkboxList {
+            display: flex;
+            justify-content: space-evenly;
+            width: 40rem;
+            height:10rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+            /* border: 1px dotted black; */
+        }
+        #interest-sheet {
+            margin: 0 auto;
+            display: none;
+        }
     </style>
 </head>
 
@@ -89,7 +103,7 @@
 
     </div>
     <div class="title">
-        <h1 id="title">Sign up for Amity</h1>
+        <h1 id="title">Sign up for Circa</h1>
     </div>
     <form id="register-form">
         <div id="signup-sheet">
@@ -102,11 +116,34 @@
             <input type="button" id="fakeAvatar" onclick="document.getElementById('avatar').click();"
                 value="Upload Avatar" />
             <input type="file" style="display: none;" id="avatar" accept="image/jpeg" />
-            <button id="nextButton" type="submit">Sign Up</button> <!-- Add an onclick event to show the next page -->
         </div>
+        <div id="interest-sheet">
+            <h2 id="checkboxList">Pick some interesting topics!</h2> 
+            <div id="checkboxList">
+                <div><input type="checkbox"> Computer Science</div>
+                <div><input type="checkbox"> Drawing</div>
+                <div><input type="checkbox"> Gardening</div>
+                <div><input type="checkbox"> Community Service</div>
+                <div><input type="checkbox"> World Languages</div>
+                <div><input type="checkbox"> History and Culture</div>
+                <div><input type="checkbox"> Cuisine</div>
+                <div><input type="checkbox"> Dance</div>
+                <div><input type="checkbox"> Instrumental</div>
+                <div><input type="checkbox"> Sports</div>
+                <div><input type="checkbox"> Religion</div>
+                <div><input type="checkbox"> Math</div>
+                <div><input type="checkbox"> Chemistry</div>
+                <div><input type="checkbox"> English</div>
+                <div><input type="checkbox"> Biology</div>
+                <div><input type="checkbox"> Buisness</div>
+            </div>
+            <br>
+        </div>
+        <button id="nextButton" type="submit">Sign Up</button> <!-- Add an onclick event to show the next page -->
     </form>
     <script>
         let hasFile = false;
+        let interests;
         document.getElementById("avatar").onchange = function (event) {
             hasFile = true;
             document.getElementById("fakeAvatar").value = document.getElementById("avatar").files[0].name;
@@ -131,10 +168,22 @@
                 alert("Please upload an avatar!");
                 return false;
             }
+
+            if (!interests) 
+            {
+                document.getElementById("signup-sheet").style.display = "none";
+                document.getElementById("interest-sheet").style.display = "inline-block";
+                interests = true;
+                return false;
+            }
+
+            localStorage.setItem("username", username);
+            localStorage.setItem("avatar", document.getElementById("avatar").files[0])
             let data = new FormData();
-            data.set('avatar', myFileInputElement.files[0]);
+            data.set('avatar', document.getElementById("avatar").files[0]);
             data.set('json_payload', JSON.stringify({ username, password, interests }));
             fetch('/api/user/signup', { method: 'POST', body: data });
+            location.href = "/website/app.html";
         })
 
     </script>

@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="utf-8">
-    <title>Amity</title>
+    <title>Circa</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
         :root {
@@ -46,6 +46,7 @@
             }
             #channelList {
                 position: fixed;
+                text-align: center;
                 border: dotted black;
                 width: 30rem;
                 height: 50rem;
@@ -55,7 +56,7 @@
                 position: fixed;
                 /* border: dotted blue; */
                 width: 75rem;
-                height: 50rem;
+                height: 45rem;
                 right: 1vw;
                 display: flex;
                 flex-direction: column;
@@ -83,13 +84,20 @@
         }
 
         #eventList {
+            position: fixed;
+            text-align: center;
             border: dotted red;
-            left: 0;
+            left: 3rem;
+            height:30rem;
+            bottom: 10rem;
         }
 
         #messageBox {
             /* display: none; */
             border: dotted black;
+            position:fixed;
+            bottom: 10rem;
+            width:20rem;
         }
         #clubSelector {
             position: fixed;
@@ -133,43 +141,41 @@
     </ol>
     <ol id="messageList">
         <!-- These can all be removed they're just for testing purposes-->
-        <li class="message"><img title="!'m bored" src="https://cdn.discordapp.com/avatars/572891668966277140/4e0320eff8f94e47d0dcd43bcfc0e840.webp?size=80">Message</li>
-        <li class="message"><img title="!'m bored" src="https://cdn.discordapp.com/avatars/572891668966277140/4e0320eff8f94e47d0dcd43bcfc0e840.webp?size=80">Message</li>
-        <li class="message"><img title="!'m bored" src="https://cdn.discordapp.com/avatars/572891668966277140/4e0320eff8f94e47d0dcd43bcfc0e840.webp?size=80">Message</li>
-        <li class="message"><img title="!'m bored" src="https://cdn.discordapp.com/avatars/572891668966277140/4e0320eff8f94e47d0dcd43bcfc0e840.webp?size=80">Message</li>
-        <li class="message"><img title="!'m bored" src="https://cdn.discordapp.com/avatars/572891668966277140/4e0320eff8f94e47d0dcd43bcfc0e840.webp?size=80">Message</li>
-        <li class="message"><img title="!'m bored" src="https://cdn.discordapp.com/avatars/572891668966277140/4e0320eff8f94e47d0dcd43bcfc0e840.webp?size=80">Message</li>
-        <li class="message"><img title="!'m bored" src="https://cdn.discordapp.com/avatars/572891668966277140/4e0320eff8f94e47d0dcd43bcfc0e840.webp?size=80">Message</li>
-        <li class="message"><img title="!'m bored" src="https://cdn.discordapp.com/avatars/572891668966277140/4e0320eff8f94e47d0dcd43bcfc0e840.webp?size=80">Message</li>
-        <li class="message"><img title="!'m bored" src="https://cdn.discordapp.com/avatars/572891668966277140/4e0320eff8f94e47d0dcd43bcfc0e840.webp?size=80">Message</li>
-        <li class="message"><img title="!'m bored" src="https://cdn.discordapp.com/avatars/572891668966277140/4e0320eff8f94e47d0dcd43bcfc0e840.webp?size=80">Message</li>
-        <li class="message"><img title="!'m bored" src="https://cdn.discordapp.com/avatars/572891668966277140/4e0320eff8f94e47d0dcd43bcfc0e840.webp?size=80">Message</li>
-        <li class="message"><img title="!'m bored" src="https://cdn.discordapp.com/avatars/572891668966277140/4e0320eff8f94e47d0dcd43bcfc0e840.webp?size=80">Message</li>
-        <li class="message"><img title="!'m bored" src="https://cdn.discordapp.com/avatars/572891668966277140/4e0320eff8f94e47d0dcd43bcfc0e840.webp?size=80">Message</li>
-        <li class="message"><img title="!'m bored" src="https://cdn.discordapp.com/avatars/572891668966277140/4e0320eff8f94e47d0dcd43bcfc0e840.webp?size=80">Message</li>
-        <li class="message"><img title="!'m bored" src="https://cdn.discordapp.com/avatars/572891668966277140/4e0320eff8f94e47d0dcd43bcfc0e840.webp?size=80">Message</li>
-        <li class="message"><img title="!'m bored" src="https://cdn.discordapp.com/avatars/572891668966277140/4e0320eff8f94e47d0dcd43bcfc0e840.webp?size=80">Message</li>
-        <li class="message"><img title="!'m bored" src="https://cdn.discordapp.com/avatars/572891668966277140/4e0320eff8f94e47d0dcd43bcfc0e840.webp?size=80">Message</li>
-        <li class="message"><img title="!'m bored" src="https://cdn.discordapp.com/avatars/572891668966277140/4e0320eff8f94e47d0dcd43bcfc0e840.webp?size=80">Message</li>
-        <li class="message"><img title="!'m bored" src="https://cdn.discordapp.com/avatars/572891668966277140/4e0320eff8f94e47d0dcd43bcfc0e840.webp?size=80">Message</li>
-        <li class="message"><img title="!'m bored" src="https://cdn.discordapp.com/avatars/572891668966277140/4e0320eff8f94e47d0dcd43bcfc0e840.webp?size=80">Message</li>
+        <li class="message"><img title="!'m bored" src="https://cdn.discordapp.com/avatars/572891668966277140/4e0320eff8f94e47d0dcd43bcfc0e840.webp?size=80">This backend is being annoying</li>
+        <li class="message"><img title="!'m bored" src="https://cdn.discordapp.com/avatars/572891668966277140/4e0320eff8f94e47d0dcd43bcfc0e840.webp?size=80">the webcrypto library is stupid</li>
+        <li class="message"><img title="ugackMiner" src="https://cdn.discordapp.com/avatars/200381124738809856/fa502f0e7799817d32fbcc913aaf1665.webp?size=80">I know right?</li>
     </ol>
-    <input id="messageBox" type="text">
+    <input id="messageBox" placeholder="Send a message..." type="text">
     <div id="clubSelector">
-        <img class="club selected" src="https://cdn.discordapp.com/avatars/572891668966277140/4e0320eff8f94e47d0dcd43bcfc0e840.webp?size=80">
-        <img class="club" src="https://cdn.discordapp.com/avatars/200381124738809856/fa502f0e7799817d32fbcc913aaf1665.webp?size=80">
-        <img class="club" src="https://cdn.discordapp.com/avatars/397170615812882443/8abf7a26936aed1a71dd5880ab34b9a7.webp?size=80">
+        <img class="club selected" src="https://cdn.iconscout.com/icon/free/png-256/node-js-1174925.png">
     </div>
     
     
     <script>
-        function appendMessage(message, avatar, username) 
+        let myUsername;
+        let lastMessageID;
+        let currentServerID;
+        let currentChannelID;
+
+        document.getElementById("messageBox").addEventListener("keydown", (event) => {
+            if (event.key === "Enter") 
+            {
+                sendMessage(currentServerID, currentChannelID, document.getElementById("messageBox").value);
+                document.getElementById("messageBox").value = "";
+            }
+        })
+
+
+        function appendMessage(message, avatar, username, prepend = false) 
         {
             let container = document.getElementById("messageList");
             let messageElem = document.createElement("div");
             messageElem.classList.add("message");
             messageElem.innerHTML = "<img src='" + avatar + "' title='" + username + "'>" + message;
-            container.appendChild(messageElem);
+            if (prepend)
+                container.prepend(messageElem);
+            else
+                container.appendChild(messageElem);
             if (container.scrollHeight - container.clientHeight <= container.scrollTop + 100) 
             {
                 container.scrollTop = container.scrollHeight - container.clientHeight;
@@ -179,6 +185,43 @@
         {
 
         }
+
+        async function getMessages(serverID, channelID, messageID = "") 
+        {
+            // Message ID must start with a / when called
+            let messages = JSON.parse(await fetch(location.hostname + "/api/" + serverID + "/" + channelID + messageID));
+            messages.forEach(message => {
+                let sender = await getUserData(message.author);
+                appendMessage(message.content, sender.avatar, sender.username, true);
+            });
+
+        }
+
+        async function getUserData(userID) 
+        {
+            return JSON.parse(await fetch(location.hostname + "/api/user/data/" + userID));
+        }
+
+        async function getServers() 
+        {
+            let servers = JSON.parse(await fetch(location.hostname + "/api/user/servers"));
+            servers.forEach(server => {
+                currentServerID = server;
+            });
+        }
+
+        async function sendMessage(serverID, channelID, message) 
+        {
+            appendMessage(message, localStorage.getItem("avatar"), localStorage.getItem("username"));
+            return await fetch(location.hostname + "/api/channel/" + serverID + "/" + channelID, {
+                body: "json_payload=" + message + "&attachment=",
+                headers: {
+                    "Content-Type": "application/x-www-form-urlencoded",
+                },
+                method: "post",
+            });
+        }
+
         function switchChannel() 
         {
 
