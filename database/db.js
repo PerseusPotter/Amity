@@ -83,19 +83,22 @@ class Table {
         await this.fhP;
         fh = this.fh;
       }
+
+      if (this.totalLength === null) this.totalLength = (await fh.stat()).size;
+
       const q = this.readQueue;
       const len = this.cumSumT;
       let buf = Buffer.allocUnsafe(4096);
-      let index = 0;
-      while (true) {
+      let index = totalLength;
+      while ((index -= 4096) >= 0) {
         let { bytesRead } = fh.read(buf, 0, len, index);
-        if (bytesRead < len) {
+        if (bytesRead < 4096) {
           q.forEach(v => v[4](-1));
           break;
         }
 
-        let pos = 0;
-        while (pos < 4096) {
+        let pos = 4096;
+        while ((pos -= len) >= 0) {
           q.forEach((v, i) => {
             let val = parseValue(buf, pos + v[0], v[1], v[2]);
             if (val instanceof Buffer ? val.equals(v[3]) : val === v[3]) {
@@ -103,9 +106,7 @@ class Table {
               q.splice(i, 1);
             }
           });
-          pos += len;
         }
-        index += 4096;
       }
     }
 
