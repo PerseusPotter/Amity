@@ -21,14 +21,9 @@ var Servers = new Table('./data/servers.stupiddb', [
     length: 8
   },
   {
-    name: 'interests1',
-    type: 'number',
-    length: 4
-  },
-  {
-    name: 'interests2',
-    type: 'number',
-    length: 4
+    name: 'interests',
+    type: 'uuid',
+    length: 8
   },
   {
     name: 'members',
@@ -39,6 +34,11 @@ var Servers = new Table('./data/servers.stupiddb', [
     name: 'channels',
     type: 'buffer',
     length: (8 + 32) * 60
+  },
+  {
+    name: 'visibility',
+    type: 'number',
+    length: 1
   }
 ]);
 
@@ -50,15 +50,16 @@ try {
 } catch {
   fs_p = require('fs').promises;
 }
+var path = require('path');
 
 let serverCache = new WeakMap();
 module.exports = {
-  async createServer(name, owner, icon, interests1, interests2) {
+  async createServer(name, owner, icon, interests) {
     let serverID = snowflake(2);
     let iconID = snowflake(3);
     // 8MB
     if (icon.byteLength > 8388608) throw 'image to big';
-    await fs_p.writeFile('./data/files/' + iconID + '.jpg', icon);
+    await fs_p.writeFile(path.join(__dirname, './data/files/', iconID + '.jpg'), icon);
 
     let mBuf = Buffer.allocUnsafe(8);
     mBuf.writeBigUInt64LE(owner);
@@ -72,8 +73,7 @@ module.exports = {
       name,
       owner,
       iconID,
-      interests1,
-      interests2,
+      interests,
       members: mBuf,
       channels: cBuf
     };

@@ -58,7 +58,7 @@ class Channel {
       if (attachment.byteLength > 8388608) throw 'attachment to big';
       attachmentExt = path.extname(attachmentName);
       if (attachmentExt.length > 20) throw 'attachment extension too long';
-      await fs_p.writeFile('./data/files/' + attachmentID + attachmentExt, icon);
+      await fs_p.writeFile(path.join(__dirname, './data/files/', attachmentID + attachmentExt), icon);
     } else attachmentID = 0n;
 
     let data = {

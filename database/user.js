@@ -36,14 +36,9 @@ var Users = new Table('./data/users.stupiddb', [
     length: 8 * 200
   },
   {
-    name: 'interests1',
-    type: 'number',
-    length: 4
-  },
-  {
-    name: 'interests2',
-    type: 'number',
-    length: 4
+    name: 'interests',
+    type: 'uuid',
+    length: 8
   }
 ]);
 
@@ -57,18 +52,19 @@ try {
 } catch {
   fs_p = require('fs').promises;
 }
+var path = require('path');
 
 let usernameCache = new WeakMap();
 let userCache = new WeakMap();
 module.exports = {
-  async createUser(username, password, avatar, interests1, interests2) {
+  async createUser(username, password, avatar, interests) {
     if (await this.findUser(username)) throw 'user with that username already exists';
 
     let userID = snowflake(0);
     let avatarID = snowflake(1);
     // 8MB
     if (avatar.byteLength > 8388608) throw 'image to big';
-    await fs_p.writeFile('./data/files/' + avatarID + '.jpg', avatar);
+    await fs_p.writeFile(path.join(__dirnamem, './data/files/', avatarID + '.jpg'), avatar);
 
     let salt = randomBytes(16);
     let saltedPass = await pbkdf2(password, salt, 10000, 32, 'sha256');
@@ -90,8 +86,7 @@ module.exports = {
       serverKey,
       avatarID,
       friends: null,
-      interests1,
-      interests2
+      interests
     };
     await Users.appendRow(data);
 
